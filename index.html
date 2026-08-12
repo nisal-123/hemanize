@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HumanizeAI - Premium AI Text Humanizer</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@400;600;700&family=Great+Vibes&family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- html2canvas for Wedding Card Image Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Password Protection Overlay -->
+    <div id="password-screen" class="password-backdrop">
+        <div class="password-card glassmorphism">
+            <div class="password-header">
+                <div class="password-logo-icon">
+                    <i data-lucide="lock"></i>
+                </div>
+                <h2>Enter Password</h2>
+                <p>This dashboard is password protected.</p>
+            </div>
+            <div class="password-body">
+                <div class="form-group">
+                    <label for="app-password-input">Security Password</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="shield-alert" class="input-icon"></i>
+                        <input type="password" id="app-password-input" placeholder="••••••••••••">
+                        <button id="toggle-app-pass" class="icon-btn pass-toggle-btn">
+                            <i data-lucide="eye"></i>
+                        </button>
+                    </div>
+                    <span id="password-error" class="error-msg hidden">Incorrect password. Please try again.</span>
+                </div>
+            </div>
+            <div class="password-footer">
+                <button id="submit-password-btn" class="btn primary-btn w-full">Unlock Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="glow-bg"></div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i data-lucide="sparkles"></i>
+                </div>
+                <h1>Humanize<span>AI</span></h1>
+                <span class="badge">PRO v1.0</span>
+            </div>
+            <div class="header-actions">
+                <button id="open-api-key-btn" class="btn secondary-btn">
+                    <i data-lucide="key"></i>
+                    <span>Gemini API Key</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Tool Navigation Bar -->
+        <nav class="tool-navbar glassmorphism">
+            <button class="nav-tab active" data-tab="humanizer">
+                <i data-lucide="sparkles"></i>
+                <span>AI Humanizer</span>
+            </button>
+            <button class="nav-tab" data-tab="youtube">
+                <i data-lucide="youtube"></i>
+                <span>YouTube Downloader</span>
+            </button>
+            <button class="nav-tab" data-tab="facebook">
+                <i data-lucide="facebook"></i>
+                <span>Facebook Downloader</span>
+            </button>
+            <button class="nav-tab" data-tab="tiktok">
+                <i data-lucide="video"></i>
+                <span>TikTok Downloader</span>
+            </button>
+            <button class="nav-tab" data-tab="watermark">
+                <i data-lucide="wand-2"></i>
+                <span>Gemini Watermark Remover</span>
+            </button>
+            <button class="nav-tab" data-tab="invitation">
+                <i data-lucide="heart"></i>
+                <span>Wedding Invitation</span>
+            </button>
+        </nav>
+
+        <!-- Tab 1: AI Humanizer -->
+        <div id="tab-humanizer" class="tool-view active">
+            <!-- Main Dashboard -->
+            <main class="dashboard-grid">
+                <!-- Left Side: Controls & Input -->
+                <section class="panel-card input-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <i data-lucide="file-text"></i>
+                            <h2>AI-Generated Text</h2>
+                        </div>
+                        <div class="panel-actions">
+                            <button id="clear-input-btn" class="icon-btn" title="Clear text">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="textarea-wrapper">
+                        <textarea id="ai-input"
+                            placeholder="Paste your AI-generated text here (ChatGPT, Claude, Gemini, etc.). There is no word limit..."></textarea>
+                        <div class="textarea-overlay" id="scanning-overlay">
+                            <div class="scanner-line"></div>
+                            <div class="scanner-text">Scanning & Humanizing Text...</div>
+                        </div>
+                    </div>
+
+                    <div class="input-footer">
+                        <div class="stats-row">
+                            <span class="stat-badge"><i data-lucide="bar-chart-2"></i> <span id="input-word-count">0</span>
+                                words</span>
+                            <span class="stat-badge"><i data-lucide="clock"></i> <span id="input-read-time">0</span> min
+                                read</span>
+                        </div>
+                        <button id="humanize-btn" class="btn primary-btn">
+                            <span>Humanize Content</span>
+                            <i data-lucide="zap"></i>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Middle: Settings Sidebar -->
+                <section class="panel-card settings-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <i data-lucide="sliders"></i>
+                            <h2>Humanizer Settings</h2>
+                        </div>
+                    </div>
+
+                    <div class="settings-content">
+                        <!-- Tone Selection -->
+                        <div class="setting-group">
+                            <label class="setting-label">
+                                <span>Writing Tone</span>
+                            </label>
+                            <div class="tone-grid">
+                                <button class="tone-option active" data-tone="conversational">
+                                    <i data-lucide="message-square"></i>
+                                    <span>Conversational</span>
+                                </button>
+                                <button class="tone-option" data-tone="professional">
+                                    <i data-lucide="briefcase"></i>
+                                    <span>Professional</span>
+                                </button>
+                                <button class="tone-option" data-tone="creative">
+                                    <i data-lucide="palette"></i>
+                                    <span>Creative</span>
+                                </button>
+                                <button class="tone-option" data-tone="academic">
+                                    <i data-lucide="graduation-cap"></i>
+                                    <span>Academic</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Model Selection -->
+                        <div class="setting-group">
+                            <label class="setting-label">
+                                <span>AI Model</span>
+                            </label>
+                            <div class="select-wrapper">
+                                <i data-lucide="cpu" class="select-icon"></i>
+                                <select id="model-select">
+                                    <option value="gemini-3.5-flash" selected>Gemini 3.5 Flash (Fast)</option>
+                                    <option value="gemini-1.5-flash">Gemini 1.5 Flash (Stable)</option>
+                                    <option value="gemini-1.5-pro">Gemini 1.5 Pro (Advanced)</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="select-arrow"></i>
+                            </div>
+                        </div>
+
+                        <!-- Readability Selection -->
+                        <div class="setting-group">
+                            <label class="setting-label">
+                                <span>Readability Level</span>
+                            </label>
+                            <div class="select-wrapper">
+                                <i data-lucide="book-open" class="select-icon"></i>
+                                <select id="readability-select">
+                                    <option value="simple">Simple (8th Grade)</option>
+                                    <option value="highschool" selected>Standard (High School)</option>
+                                    <option value="university">Advanced (University)</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="select-arrow"></i>
+                            </div>
+                        </div>
+
+                        <!-- Intensity Slider -->
+                        <div class="setting-group">
+                            <div class="slider-header">
+                                <label class="setting-label">Humanization Intensity</label>
+                                <span id="intensity-value">85%</span>
+                            </div>
+                            <input type="range" id="intensity-range" min="50" max="100" value="85" class="slider-input">
+                            <div class="slider-labels">
+                                <span>Balanced</span>
+                                <span>Ultra</span>
+                            </div>
+                        </div>
+
+                        <!-- Options Toggle -->
+                        <div class="setting-group checkbox-group">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="improve-flow" checked>
+                                <span class="checkmark"></span>
+                                <span class="checkbox-label">Enhance flow and transitions</span>
+                            </label>
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="remove-cliches" checked>
+                                <span class="checkmark"></span>
+                                <span class="checkbox-label">Purge generic AI vocabulary</span>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Right Side: Humanized Output -->
+                <section class="panel-card output-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <i data-lucide="sparkles"></i>
+                            <h2>Humanized Output</h2>
+                        </div>
+                        <div class="panel-actions">
+                            <button id="copy-output-btn" class="icon-btn" title="Copy text" disabled>
+                                <i data-lucide="copy"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="textarea-wrapper">
+                        <div id="human-output" class="output-display empty"
+                            data-placeholder="Humanized text will appear here section by section..."></div>
+                    </div>
+
+                    <div class="output-footer">
+                        <div class="stats-row">
+                            <span class="stat-badge"><i data-lucide="bar-chart-2"></i> <span id="output-word-count">0</span>
+                                words</span>
+                        </div>
+                        <div class="score-card" id="bypass-score-card">
+                            <div class="score-info">
+                                <span class="score-label">Human Bypass Probability</span>
+                                <span class="score-num" id="bypass-percentage">0%</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill" id="bypass-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- Tab 2: YouTube Downloader -->
+        <div id="tab-youtube" class="tool-view hidden">
+            <div class="tool-hero-card glassmorphism">
+                <div class="hero-icon youtube-theme">
+                    <i data-lucide="youtube"></i>
+                </div>
+                <div class="hero-text">
+                    <h2>YouTube Video & Audio Downloader</h2>
+                    <p>Extract HD YouTube videos in 1080p/720p MP4 or high-quality MP3 audio tracks instantly.</p>
+                </div>
+            </div>
+
+            <div class="downloader-box glassmorphism">
+                <div class="url-input-group">
+                    <div class="input-wrapper main-url-input">
+                        <i data-lucide="link" class="input-icon"></i>
+                        <input type="text" id="yt-url-input" placeholder="Paste YouTube link here (e.g. https://www.youtube.com/watch?v=... or shorts)...">
+                        <button id="yt-paste-btn" class="btn text-btn" title="Paste from clipboard">
+                            <i data-lucide="clipboard"></i> Paste
+                        </button>
+                    </div>
+                    <button id="yt-fetch-btn" class="btn primary-btn youtube-btn">
+                        <i data-lucide="download"></i>
+                        <span>Fetch Media</span>
+                    </button>
+                </div>
+                <div id="yt-error-msg" class="error-msg hidden"></div>
+            </div>
+
+            <div id="yt-loading" class="tool-loading hidden">
+                <div class="spinner"></div>
+                <p>Analyzing YouTube URL & extracting available qualities...</p>
+            </div>
+
+            <div id="yt-result-card" class="result-card glassmorphism hidden">
+                <div class="result-preview">
+                    <div class="thumb-container">
+                        <img id="yt-thumb" src="" alt="YouTube Thumbnail">
+                        <span id="yt-duration" class="duration-tag">00:00</span>
+                    </div>
+                    <div class="media-meta">
+                        <h3 id="yt-title">Video Title</h3>
+                        <p class="channel-name"><i data-lucide="user"></i> <span id="yt-channel">Channel Name</span></p>
+                        <div class="meta-badges">
+                            <span class="badge"><i data-lucide="eye"></i> <span id="yt-views">0</span> views</span>
+                            <span class="badge quality-badge">HD Available</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="download-options-tabs">
+                    <div class="options-group">
+                        <h4><i data-lucide="video"></i> MP4 Video Download</h4>
+                        <div class="quality-grid">
+                            <div class="quality-card">
+                                <div class="q-info">
+                                    <span class="q-name">1080p Full HD</span>
+                                    <span class="q-size">MP4 • ~45 MB</span>
+                                </div>
+                                <button class="btn primary-btn sm-btn yt-dl-btn" data-type="mp4" data-quality="1080">
+                                    <i data-lucide="download"></i> Download
+                                </button>
+                            </div>
+                            <div class="quality-card">
+                                <div class="q-info">
+                                    <span class="q-name">720p HD</span>
+                                    <span class="q-size">MP4 • ~22 MB</span>
+                                </div>
+                                <button class="btn primary-btn sm-btn yt-dl-btn" data-type="mp4" data-quality="720">
+                                    <i data-lucide="download"></i> Download
+                                </button>
+                            </div>
+                            <div class="quality-card">
+                                <div class="q-info">
+                                    <span class="q-name">480p SD</span>
+                                    <span class="q-size">MP4 • ~12 MB</span>
+                                </div>
+                                <button class="btn secondary-btn sm-btn yt-dl-btn" data-type="mp4" data-quality="480">
+                                    <i data-lucide="download"></i> Download
+                                </button>
+                            </div>
+                            <div class="quality-card">
+                                <div class="q-info">
+                                    <span class="q-name">360p Compact</span>
+                                    <span class="q-size">MP4 • ~7 MB</span>
+                                </div>
+                                <button class="btn secondary-btn sm-btn yt-dl-btn" data-type="mp4" data-quality="360">
+                                    <i data-lucide="download"></i> Download
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="options-group">
+                        <h4><i data-lucide="music"></i> MP3 & Audio Download</h4>
+                        <div class="quality-grid">
+                            <div class="quality-card">
+                                <div class="q-info">
+                                    <span class="q-name">MP3 High Quality</span>
+                                    <span class="q-size">320 kbps • ~5 MB</span>
+                                </div>
+                                <button class="btn primary-btn sm-btn yt-dl-btn" data-type="mp3" data-quality="320">
+                                    <i data-lucide="headphones"></i> Download MP3
+                                </button>
+                            </div>
+                            <div class="quality-card">
+                                <div class="q-info">
+                                    <span class="q-name">HD Cover Thumbnail</span>
+                                    <span class="q-size">MaxRes PNG</span>
+                                </div>
+                                <button id="yt-thumb-dl" class="btn secondary-btn sm-btn">
+                                    <i data-lucide="image"></i> Save Image
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Facebook Downloader -->
+        <div id="tab-facebook" class="tool-view hidden">
+            <div class="tool-hero-card glassmorphism">
+                <div class="hero-icon facebook-theme">
+                    <i data-lucide="facebook"></i>
+                </div>
+                <div class="hero-text">
+                    <h2>Facebook Video Downloader</h2>
+                    <p>Download Facebook public videos, Watch clips, and Reels in HD or SD quality with one click.</p>
+                </div>
+            </div>
+
+            <div class="downloader-box glassmorphism">
+                <div class="url-input-group">
+                    <div class="input-wrapper main-url-input">
+                        <i data-lucide="link" class="input-icon"></i>
+                        <input type="text" id="fb-url-input" placeholder="Paste Facebook video or Reel link (e.g. https://www.facebook.com/watch/...)...">
+                        <button id="fb-paste-btn" class="btn text-btn" title="Paste from clipboard">
+                            <i data-lucide="clipboard"></i> Paste
+                        </button>
+                    </div>
+                    <button id="fb-fetch-btn" class="btn primary-btn facebook-btn">
+                        <i data-lucide="download"></i>
+                        <span>Fetch Video</span>
+                    </button>
+                </div>
+                <div id="fb-error-msg" class="error-msg hidden"></div>
+            </div>
+
+            <div id="fb-loading" class="tool-loading hidden">
+                <div class="spinner"></div>
+                <p>Fetching Facebook video details and download links...</p>
+            </div>
+
+            <div id="fb-result-card" class="result-card glassmorphism hidden">
+                <div class="result-preview">
+                    <div class="thumb-container video-preview-container">
+                        <img id="fb-thumb" src="" alt="Facebook Preview">
+                        <span id="fb-quality-tag" class="duration-tag">HD 1080p</span>
+                    </div>
+                    <div class="media-meta">
+                        <h3 id="fb-title">Facebook Video Stream</h3>
+                        <p class="channel-name"><i data-lucide="facebook"></i> Public Facebook Video</p>
+                    </div>
+                </div>
+
+                <div class="download-options-tabs">
+                    <div class="quality-grid">
+                        <div class="quality-card">
+                            <div class="q-info">
+                                <span class="q-name">HD Quality (1080p/720p)</span>
+                                <span class="q-size">MP4 Video</span>
+                            </div>
+                            <button class="btn primary-btn sm-btn fb-dl-btn" data-quality="hd">
+                                <i data-lucide="download"></i> Download HD MP4
+                            </button>
+                        </div>
+                        <div class="quality-card">
+                            <div class="q-info">
+                                <span class="q-name">SD Quality (480p)</span>
+                                <span class="q-size">MP4 Video</span>
+                            </div>
+                            <button class="btn secondary-btn sm-btn fb-dl-btn" data-quality="sd">
+                                <i data-lucide="download"></i> Download SD MP4
+                            </button>
+                        </div>
+                        <div class="quality-card">
+                            <div class="q-info">
+                                <span class="q-name">Audio Only Track</span>
+                                <span class="q-size">MP3 Audio</span>
+                            </div>
+                            <button class="btn secondary-btn sm-btn fb-dl-btn" data-quality="mp3">
+                                <i data-lucide="music"></i> Download MP3
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: TikTok Downloader -->
+        <div id="tab-tiktok" class="tool-view hidden">
+            <div class="tool-hero-card glassmorphism">
+                <div class="hero-icon tiktok-theme">
+                    <i data-lucide="video"></i>
+                </div>
+                <div class="hero-text">
+                    <h2>TikTok Video Downloader (No Watermark)</h2>
+                    <p>Download TikTok videos without watermark in HD, extract original audio MP3s & cover photos.</p>
+                </div>
+            </div>
+
+            <div class="downloader-box glassmorphism">
+                <div class="url-input-group">
+                    <div class="input-wrapper main-url-input">
+                        <i data-lucide="link" class="input-icon"></i>
+                        <input type="text" id="tt-url-input" placeholder="Paste TikTok video link (e.g. https://www.tiktok.com/@user/video/...)...">
+                        <button id="tt-paste-btn" class="btn text-btn" title="Paste from clipboard">
+                            <i data-lucide="clipboard"></i> Paste
+                        </button>
+                    </div>
+                    <button id="tt-fetch-btn" class="btn primary-btn tiktok-btn">
+                        <i data-lucide="download"></i>
+                        <span>Fetch TikTok</span>
+                    </button>
+                </div>
+                <div id="tt-error-msg" class="error-msg hidden"></div>
+            </div>
+
+            <div id="tt-loading" class="tool-loading hidden">
+                <div class="spinner"></div>
+                <p>Removing watermark & preparing TikTok download links...</p>
+            </div>
+
+            <div id="tt-result-card" class="result-card glassmorphism hidden">
+                <div class="result-preview tiktok-preview-layout">
+                    <div class="thumb-container tt-cover-container">
+                        <img id="tt-thumb" src="" alt="TikTok Cover">
+                    </div>
+                    <div class="media-meta">
+                        <h3 id="tt-author">@creator</h3>
+                        <p id="tt-desc" class="tiktok-caption">TikTok Video Caption...</p>
+                        <div class="meta-badges">
+                            <span class="badge"><i data-lucide="heart"></i> <span id="tt-likes">0</span> likes</span>
+                            <span class="badge"><i data-lucide="share-2"></i> <span id="tt-shares">0</span> shares</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="download-options-tabs">
+                    <div class="quality-grid tiktok-options-grid">
+                        <div class="quality-card highlight-card">
+                            <div class="q-info">
+                                <span class="q-name"><i data-lucide="sparkles"></i> Without Watermark</span>
+                                <span class="q-size">HD MP4 Video</span>
+                            </div>
+                            <button class="btn primary-btn sm-btn tt-dl-btn" data-type="no-watermark">
+                                <i data-lucide="download"></i> Download No-WM MP4
+                            </button>
+                        </div>
+                        <div class="quality-card">
+                            <div class="q-info">
+                                <span class="q-name">With Watermark</span>
+                                <span class="q-size">Original MP4 Video</span>
+                            </div>
+                            <button class="btn secondary-btn sm-btn tt-dl-btn" data-type="watermark">
+                                <i data-lucide="download"></i> Download Original
+                            </button>
+                        </div>
+                        <div class="quality-card">
+                            <div class="q-info">
+                                <span class="q-name">Original Audio Track</span>
+                                <span class="q-size">MP3 Sound</span>
+                            </div>
+                            <button class="btn secondary-btn sm-btn tt-dl-btn" data-type="audio">
+                                <i data-lucide="music"></i> Download MP3 Sound
+                            </button>
+                        </div>
+                        <div class="quality-card">
+                            <div class="q-info">
+                                <span class="q-name">Video Cover Frame</span>
+                                <span class="q-size">HD Image</span>
+                            </div>
+                            <button id="tt-cover-dl" class="btn secondary-btn sm-btn">
+                                <i data-lucide="image"></i> Download Cover
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 5: Gemini AI Watermark Remover -->
+        <div id="tab-watermark" class="tool-view hidden">
+            <div class="tool-hero-card glassmorphism">
+                <div class="hero-icon watermark-theme">
+                    <i data-lucide="wand-2"></i>
+                </div>
+                <div class="hero-text">
+                    <h2>Gemini AI Watermark Remover & Clean Studio</h2>
+                    <p>Remove AI watermarks, spark logos, synthetic markers & hidden zero-width text artifacts easily.</p>
+                </div>
+            </div>
+
+            <div class="watermark-tools-wrapper">
+                <!-- Dual Switcher -->
+                <div class="subtool-switcher">
+                    <button class="subtab-btn active" data-subtab="image-wm">
+                        <i data-lucide="image"></i> Image Watermark Eraser
+                    </button>
+                    <button class="subtab-btn" data-subtab="text-wm">
+                        <i data-lucide="file-text"></i> Gemini Text AI Cleaner
+                    </button>
+                </div>
+
+                <!-- Subtool 1: Image Watermark Eraser -->
+                <div id="subtab-image-wm" class="subtool-view active">
+                    <div class="watermark-grid">
+                        <div class="panel-card wm-control-panel">
+                            <div class="panel-header">
+                                <div class="panel-title">
+                                    <i data-lucide="sliders"></i>
+                                    <h2>Eraser Controls</h2>
+                                </div>
+                            </div>
+                            <div class="settings-content">
+                                <div class="setting-group">
+                                    <label class="setting-label">Removal Method</label>
+                                    <div class="mode-options">
+                                        <button class="mode-btn active" data-mode="auto">
+                                            <i data-lucide="sparkles"></i> Auto Gemini Spark Logo
+                                        </button>
+                                        <button class="mode-btn" data-mode="manual">
+                                            <i data-lucide="brush"></i> Custom Brush Mask
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div id="brush-settings" class="setting-group hidden">
+                                    <div class="slider-header">
+                                        <label class="setting-label">Brush Radius</label>
+                                        <span id="brush-size-val">30px</span>
+                                    </div>
+                                    <input type="range" id="brush-size-range" min="10" max="100" value="30" class="slider-input">
+                                    <div class="brush-actions">
+                                        <button id="clear-mask-btn" class="btn secondary-btn sm-btn">
+                                            <i data-lucide="rotate-ccw"></i> Clear Mask
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="setting-group">
+                                    <button id="process-wm-btn" class="btn primary-btn w-full" disabled>
+                                        <i data-lucide="wand-2"></i> Clean & Remove Watermark
+                                    </button>
+                                </div>
+                                <div class="setting-group">
+                                    <button id="download-wm-btn" class="btn secondary-btn w-full" disabled>
+                                        <i data-lucide="download"></i> Save Cleaned Image (PNG)
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-card wm-canvas-panel">
+                            <div class="panel-header">
+                                <div class="panel-title">
+                                    <i data-lucide="eye"></i>
+                                    <h2>Canvas Preview</h2>
+                                </div>
+                                <button id="reset-image-btn" class="icon-btn" title="Upload new image" hidden>
+                                    <i data-lucide="trash-2"></i>
+                                </button>
+                            </div>
+
+                            <div class="canvas-viewport" id="wm-viewport">
+                                <div id="wm-dropzone" class="dropzone-box">
+                                    <i data-lucide="upload-cloud" class="drop-icon"></i>
+                                    <h3>Drag & Drop Image Here</h3>
+                                    <p>Supports PNG, JPG, WEBP formats with Gemini or AI watermarks</p>
+                                    <button class="btn primary-btn sm-btn" onclick="document.getElementById('wm-file-input').click()">
+                                        <i data-lucide="folder"></i> Browse Image
+                                    </button>
+                                    <input type="file" id="wm-file-input" accept="image/*" class="hidden">
+                                </div>
+
+                                <div id="wm-canvas-container" class="canvas-container hidden">
+                                    <canvas id="wm-main-canvas"></canvas>
+                                    <canvas id="wm-mask-canvas"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subtool 2: Gemini Text AI Cleaner -->
+                <div id="subtab-text-wm" class="subtool-view hidden">
+                    <div class="dashboard-grid text-cleaner-grid">
+                        <section class="panel-card input-panel">
+                            <div class="panel-header">
+                                <div class="panel-title">
+                                    <i data-lucide="file-text"></i>
+                                    <h2>Raw Gemini AI Output</h2>
+                                </div>
+                            </div>
+                            <div class="textarea-wrapper">
+                                <textarea id="text-wm-input" placeholder="Paste Gemini output containing hidden AI markers or SynthID markers here..."></textarea>
+                            </div>
+                            <div class="input-footer">
+                                <button id="clean-text-wm-btn" class="btn primary-btn">
+                                    <i data-lucide="shield-check"></i> Purge AI Markers
+                                </button>
+                            </div>
+                        </section>
+
+                        <section class="panel-card output-panel">
+                            <div class="panel-header">
+                                <div class="panel-title">
+                                    <i data-lucide="check-circle"></i>
+                                    <h2>Cleaned Text</h2>
+                                </div>
+                                <button id="copy-clean-text-btn" class="icon-btn" title="Copy text">
+                                    <i data-lucide="copy"></i>
+                                </button>
+                            </div>
+                            <div class="textarea-wrapper">
+                                <textarea id="text-wm-output" readonly placeholder="Cleaned text will appear here without zero-width spaces or AI signatures..."></textarea>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 6: Wedding Invitation Creator -->
+        <div id="tab-invitation" class="tool-view hidden">
+            <div class="tool-hero-card glassmorphism">
+                <div class="hero-icon wedding-theme">
+                    <i data-lucide="heart"></i>
+                </div>
+                <div class="hero-text">
+                    <h2>Digital Wedding Invitation Creator</h2>
+                    <p>Design luxury wedding invitation cards with live countdown timers, romantic themes, map links & guest RSVPs.</p>
+                </div>
+            </div>
+
+            <div class="wedding-creator-grid">
+                <!-- Controls Panel -->
+                <div class="panel-card wedding-controls-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <i data-lucide="sliders"></i>
+                            <h2>Invitation Details</h2>
+                        </div>
+                    </div>
+
+                    <div class="settings-content accordion-settings">
+                        <!-- Theme Selection -->
+                        <div class="setting-group">
+                            <label class="setting-label">Luxury Theme Preset</label>
+                            <div class="wedding-theme-grid">
+                                <button class="w-theme-btn active" data-wtheme="royal-gold">
+                                    <div class="theme-swatch royal-swatch"></div>
+                                    <span>Royal Gold</span>
+                                </button>
+                                <button class="w-theme-btn" data-wtheme="rose-floral">
+                                    <div class="theme-swatch rose-swatch"></div>
+                                    <span>Rose Floral</span>
+                                </button>
+                                <button class="w-theme-btn" data-wtheme="midnight-glass">
+                                    <div class="theme-swatch midnight-swatch"></div>
+                                    <span>Midnight</span>
+                                </button>
+                                <button class="w-theme-btn" data-wtheme="emerald-gold">
+                                    <div class="theme-swatch emerald-swatch"></div>
+                                    <span>Emerald</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Couple Names -->
+                        <div class="setting-group">
+                            <label class="setting-label">Couple Names</label>
+                            <div class="form-row">
+                                <div class="input-wrapper">
+                                    <i data-lucide="heart" class="input-icon"></i>
+                                    <input type="text" id="w-groom" value="Kasun Perera" placeholder="Groom Name">
+                                </div>
+                                <div class="input-wrapper">
+                                    <i data-lucide="heart" class="input-icon"></i>
+                                    <input type="text" id="w-bride" value="Dilini Fernando" placeholder="Bride Name">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cursive Font -->
+                        <div class="setting-group">
+                            <label class="setting-label">Typography Style</label>
+                            <div class="select-wrapper">
+                                <i data-lucide="type" class="select-icon"></i>
+                                <select id="w-font-select">
+                                    <option value="'Great Vibes', cursive" selected>Great Vibes (Classic Script)</option>
+                                    <option value="'Alex Brush', cursive">Alex Brush (Graceful Script)</option>
+                                    <option value="'Playfair Display', serif">Playfair Display (Serif Elegance)</option>
+                                    <option value="'Cinzel', serif">Cinzel (Royal Roman)</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="select-arrow"></i>
+                            </div>
+                        </div>
+
+                        <!-- Date & Time -->
+                        <div class="setting-group">
+                            <label class="setting-label">Wedding Date & Time</label>
+                            <div class="form-row">
+                                <div class="input-wrapper">
+                                    <i data-lucide="calendar" class="input-icon"></i>
+                                    <input type="date" id="w-date" value="2026-11-25">
+                                </div>
+                                <div class="input-wrapper">
+                                    <i data-lucide="clock" class="input-icon"></i>
+                                    <input type="time" id="w-time" value="10:30">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Venue Name & Address -->
+                        <div class="setting-group">
+                            <label class="setting-label">Venue & Location</label>
+                            <div class="input-wrapper mb-2">
+                                <i data-lucide="map-pin" class="input-icon"></i>
+                                <input type="text" id="w-venue" value="The Grand Ballroom, Shangri-La Hotel" placeholder="Venue Name">
+                            </div>
+                            <div class="input-wrapper">
+                                <i data-lucide="navigation" class="input-icon"></i>
+                                <input type="text" id="w-address" value="Colombo 02, Sri Lanka" placeholder="Address / Location for Google Maps">
+                            </div>
+                        </div>
+
+                        <!-- Host Quote / Message -->
+                        <div class="setting-group">
+                            <label class="setting-label">Invitation Message</label>
+                            <textarea id="w-quote" rows="2" placeholder="Invitation quote...">Together with their families, invite you to celebrate their wedding ceremony and reception.</textarea>
+                        </div>
+
+                        <!-- Background Audio Melodies -->
+                        <div class="setting-group">
+                            <label class="setting-label">Romantic Background Music</label>
+                            <div class="audio-control-bar">
+                                <button id="w-audio-toggle" class="btn secondary-btn sm-btn">
+                                    <i data-lucide="play"></i> <span id="w-audio-btn-text">Play Melody</span>
+                                </button>
+                                <select id="w-music-select" class="sm-select">
+                                    <option value="piano">Romantic Piano Waltz</option>
+                                    <option value="violin">Acoustic Strings Love Theme</option>
+                                    <option value="harp">Celestial Harp Harmony</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Invitation Preview Panel -->
+                <div class="panel-card wedding-preview-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <i data-lucide="eye"></i>
+                            <h2>Live Card Preview</h2>
+                        </div>
+                        <div class="card-export-actions">
+                            <button id="w-download-png" class="btn primary-btn sm-btn">
+                                <i data-lucide="image"></i> Save as PNG
+                            </button>
+                            <button id="w-share-wa" class="btn secondary-btn sm-btn">
+                                <i data-lucide="share-2"></i> WhatsApp
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="wedding-card-wrapper">
+                        <div id="wedding-card" class="wedding-card theme-royal-gold">
+                            <div class="w-card-border"></div>
+                            
+                            <div class="w-card-header">
+                                <span class="w-sub-tag">ARE GETTING MARRIED</span>
+                                <div class="w-ornament"><i data-lucide="sparkles"></i></div>
+                            </div>
+
+                            <div class="w-names-container">
+                                <h1 id="preview-groom" class="w-name">Kasun</h1>
+                                <span class="w-ampersand">&</span>
+                                <h1 id="preview-bride" class="w-name">Dilini</h1>
+                            </div>
+
+                            <p id="preview-quote" class="w-quote-text">
+                                Together with their families, invite you to celebrate their wedding ceremony and reception.
+                            </p>
+
+                            <div class="w-divider"><span>❦</span></div>
+
+                            <div class="w-date-time-box">
+                                <div id="preview-day-name" class="w-day">WEDNESDAY</div>
+                                <div id="preview-full-date" class="w-big-date">NOVEMBER 25, 2026</div>
+                                <div id="preview-time" class="w-time-tag">AT 10:30 AM</div>
+                            </div>
+
+                            <!-- Live Countdown -->
+                            <div class="w-countdown-box">
+                                <div class="cd-title">COUNTDOWN TO THE BIG DAY</div>
+                                <div class="cd-units">
+                                    <div class="cd-unit"><span id="cd-days">00</span><label>Days</label></div>
+                                    <div class="cd-unit"><span id="cd-hours">00</span><label>Hours</label></div>
+                                    <div class="cd-unit"><span id="cd-mins">00</span><label>Mins</label></div>
+                                    <div class="cd-unit"><span id="cd-secs">00</span><label>Secs</label></div>
+                                </div>
+                            </div>
+
+                            <!-- Venue Info & Map Button -->
+                            <div class="w-venue-box">
+                                <div class="w-venue-icon"><i data-lucide="map-pin"></i></div>
+                                <h3 id="preview-venue">The Grand Ballroom, Shangri-La Hotel</h3>
+                                <p id="preview-address">Colombo 02, Sri Lanka</p>
+                                <a id="preview-map-link" href="https://maps.google.com/?q=Colombo+02,+Sri+Lanka" target="_blank" class="w-map-btn">
+                                    <i data-lucide="navigation"></i> Open Location Map
+                                </a>
+                            </div>
+
+                            <!-- Schedule Timeline -->
+                            <div class="w-schedule-box">
+                                <h4>EVENT PROGRAM</h4>
+                                <ul class="w-timeline">
+                                    <li><span>10:30 AM</span> Poruwa Ceremony & Auspicious Rites</li>
+                                    <li><span>12:30 PM</span> Grand Buffet Lunch & Music</li>
+                                    <li><span>03:30 PM</span> Champagne Toast & Farewell</li>
+                                </ul>
+                            </div>
+
+                            <!-- RSVP Modal / Interactive Section -->
+                            <div class="w-rsvp-box">
+                                <button id="trigger-rsvp-btn" class="btn primary-btn w-full rsvp-trigger">
+                                    <i data-lucide="check-circle"></i> Confirm RSVP Attendance
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RSVP Modal -->
+        <div id="rsvp-modal" class="modal-backdrop hidden">
+            <div class="modal-content glassmorphism rsvp-modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">
+                        <i data-lucide="heart"></i>
+                        <h2>Wedding RSVP Response</h2>
+                    </div>
+                    <button id="close-rsvp-modal-btn" class="icon-btn">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>We are excited to celebrate with you! Please let us know if you will be attending.</p>
+
+                    <div class="form-group">
+                        <label>Your Full Name</label>
+                        <input type="text" id="rsvp-guest-name" placeholder="e.g. Nimal Perera">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Will you attend?</label>
+                        <select id="rsvp-attending-select">
+                            <option value="yes">Joyfully Accept (Attending)</option>
+                            <option value="no">Regretfully Decline</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Number of Guests</label>
+                        <select id="rsvp-guest-count">
+                            <option value="1">1 Person</option>
+                            <option value="2">2 Persons</option>
+                            <option value="3">3+ Family</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="cancel-rsvp-btn" class="btn secondary-btn">Close</button>
+                    <button id="submit-rsvp-btn" class="btn primary-btn">Submit RSVP</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Overlay (For Chunk Processing) -->
+        <div id="progress-container" class="progress-toast hidden">
+            <div class="progress-toast-content">
+                <div class="spinner"></div>
+                <div class="progress-details">
+                    <h3 id="progress-title">Humanizing text...</h3>
+                    <p id="progress-subtitle">Chunk 1 of 1</p>
+                    <div class="toast-progress-bar">
+                        <div class="toast-progress-fill" id="toast-progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+                <button id="cancel-process-btn" class="btn text-btn" title="Cancel humanization">Cancel</button>
+            </div>
+        </div>
+
+        <!-- API Key Modal -->
+        <div id="api-modal" class="modal-backdrop hidden">
+            <div class="modal-content glassmorphism">
+                <div class="modal-header">
+                    <div class="modal-title">
+                        <i data-lucide="key"></i>
+                        <h2>Google Gemini API Configuration</h2>
+                    </div>
+                    <button id="close-modal-btn" class="icon-btn">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>To run the client-side humanizer, you need a Google Gemini API Key. Your key is stored safely in
+                        your browser's local storage and is sent directly to Google's servers.</p>
+
+                    <div class="form-group">
+                        <label for="api-key-input">Gemini API Key</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="lock" class="input-icon"></i>
+                            <input type="password" id="api-key-input" placeholder="AIzaSy...">
+                            <button id="toggle-key-visibility" class="icon-btn pass-toggle-btn">
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="key-help">
+                        <span>Don't have an API key?</span>
+                        <a href="https://aistudio.google.com/" target="_blank" rel="noopener noreferrer">Get a free key
+                            from Google AI Studio <i data-lucide="external-link"></i></a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="cancel-modal-btn" class="btn secondary-btn">Cancel</button>
+                    <button id="save-api-key-btn" class="btn primary-btn">Save Key</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Created with <i data-lucide="heart" class="heart-icon"></i> by Nisal muhaniram</p>
+        </footer>
+    </div>
+
+    <!-- Application Script -->
+    <script src="app.js"></script>
+</body>
+
+</html>
